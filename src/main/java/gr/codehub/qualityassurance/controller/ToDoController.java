@@ -17,6 +17,9 @@ public class ToDoController {
     public String hello2(){
         return "hello Jenny";
     }
-
+    @GetMapping ("/lorem")
+    public String index(){
+        return "Index";
+    }
 
 }
