@@ -7,50 +7,49 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
 public class ToDoController {
     @Autowired
-private TodoRepository todoRepository;
+    private TodoRepository todoRepository;
 
-    @GetMapping ("/todo")
+    /**
+     * Gets all todo items
+     * @param model
+     * @return
+     */
 
-    public String todo(Model model){
-
-        Optional<TodoItem> todoItem = todoRepository.findById(1) ;
-        if(todoItem.isEmpty()) return null;
-
-        model.addAttribute("item", todoItem.get());
-
+    @GetMapping("/todo")
+    public String getAllTodoItems(Model model) {
+        List<TodoItem> todoItems = todoRepository.findAll();
+        model.addAttribute("items", todoItems );
         return "Page";
     }
 
+    @PostMapping("/todo/delete")
+    public String deleteItem(@RequestParam int id) {
 
+        Optional<TodoItem> todoOpt = todoRepository.findById(id);
+        if (todoOpt.isEmpty()) return "redirect:/todo";
 
-
-
-
-
-
-
-        @GetMapping ("/")
-        @ResponseBody
-        public String hello(){
-            return "hello world";
-        }
-
-
-
-    @GetMapping ("/lorem")
-    public String index(){
-        return "Index";
+        todoRepository.delete(todoOpt.get());
+        return "redirect:/todo";
     }
-    @GetMapping ("/page")
-    public String page(){
-        return "Page";
+
+    @PostMapping("/todo/add")
+    public String addItem(@RequestParam String description) {
+        TodoItem todo = new TodoItem();
+        todo.setDescription(description);
+        todo.setDate_created(new Date());
+        todoRepository.save(todo);
+        return "redirect:/todo";
     }
+
 }

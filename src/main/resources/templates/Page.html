@@ -3,9 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+
 </head>
 <body>
-This is the page
-    <input th:value="${item.description}"></input>
+<h1> Insert the new Item</h1>
+
+<div class="row">
+    <div class="col-12">
+        <form method="post" th:action="@{/todo/add}">
+            <div class="input-group mb-3">
+                <input class="form-control" name="description" type="text">
+                <div class="input-group-append">
+                    <input class="btn btn-outline-primary" type="submit" value="Add ToDo"></input>
+                </div>
+            </div>
+            <small th:if="${isItemDescriptionEmpty}" th:text="${isItemDescriptionEmpty}" id="descriptionEmpty"
+                   class="form-text text-muted"></small>
+        </form>
+    </div>
+</div>
+
+
+
+<h1> List of existing Items</h1>
+<div class="row">
+    <div class="col-12">
+        <form method="post" style="margin-bottom: 1.1%" th:action="@{/todo/delete}" th:each="item : ${items}"
+              th:if="items != null">
+            <input hidden name="id" th:value="${item.getId()}">
+            <input disabled name="description" style="border-width:0px;border:none;"
+                   th:value="${item.getDescription()}">
+            <input disabled name="date_created" style="border-width:0px;border:none;"
+                   th:value="${#dates.format(item.getDate_created(), 'dd-MMM-yyyy')}">
+            <input class="btn btn-danger btn-sm" type="submit" value="Delete">
+        </form>
+    </div>
+</div>
+
 </body>
 </html>
