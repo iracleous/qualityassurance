@@ -23,7 +23,7 @@ public class ToDoController {
 
     /**
      * Gets all todo items
-     * @param model
+     * @param model all the todo items
      * @return
      */
 
@@ -36,17 +36,12 @@ public class ToDoController {
 
     @PostMapping("/todo/delete")
     public String deleteItem(@RequestParam int id) {
-
-        Optional<TodoItem> todoOpt = todoService.findById(id);
-        if (todoOpt.isEmpty()) return "redirect:/todo";
-
-        todoService.delete(todoOpt.get());
+        todoService.delete(id);
         return "redirect:/todo";
     }
 
     @PostMapping("/todo/add")
     public String addItem(@RequestParam String description) {
-
         todoService.save(description );
         return "redirect:/todo";
     }

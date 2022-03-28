@@ -24,20 +24,23 @@ public class TodoService {
         return todoRepository.findById(id);
     }
 
-    public void delete(TodoItem todoItem) {
-        todoRepository.delete(todoItem);
+    public boolean delete(int key) {
+        Optional<TodoItem> todoOpt = todoRepository.findById(key);
+        if (todoOpt.isEmpty()) return false;
+        todoRepository.delete(todoOpt.get());
+        return true;
     }
 
-    public void save(String description) {
+    public int save(String description) {
         TodoItem todo = new TodoItem();
         todo.setDescription(description);
 
-        if (description== null) return;
-        if (description.contains("dimitris"))
-            return;
+        if (description== null  || description.contains("dimitris"))
+            return -1;
 
         todo.setDate_created(new Date());
 
         todoRepository.save(todo);
+        return todo.getId();
     }
 }
