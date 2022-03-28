@@ -3,6 +3,7 @@ package gr.codehub.qualityassurance.controller;
 
 import gr.codehub.qualityassurance.model.TodoItem;
 import gr.codehub.qualityassurance.repository.TodoRepository;
+import gr.codehub.qualityassurance.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +19,7 @@ import java.util.Optional;
 @Controller
 public class ToDoController {
     @Autowired
-    private TodoRepository todoRepository;
+    private TodoService todoService;
 
     /**
      * Gets all todo items
@@ -28,7 +29,7 @@ public class ToDoController {
 
     @GetMapping("/todo")
     public String getAllTodoItems(Model model) {
-        List<TodoItem> todoItems = todoRepository.findAll();
+        List<TodoItem> todoItems = todoService.findAll();
         model.addAttribute("items", todoItems );
         return "Page";
     }
@@ -36,19 +37,17 @@ public class ToDoController {
     @PostMapping("/todo/delete")
     public String deleteItem(@RequestParam int id) {
 
-        Optional<TodoItem> todoOpt = todoRepository.findById(id);
+        Optional<TodoItem> todoOpt = todoService.findById(id);
         if (todoOpt.isEmpty()) return "redirect:/todo";
 
-        todoRepository.delete(todoOpt.get());
+        todoService.delete(todoOpt.get());
         return "redirect:/todo";
     }
 
     @PostMapping("/todo/add")
     public String addItem(@RequestParam String description) {
-        TodoItem todo = new TodoItem();
-        todo.setDescription(description);
-        todo.setDate_created(new Date());
-        todoRepository.save(todo);
+
+        todoService.save(description );
         return "redirect:/todo";
     }
 
